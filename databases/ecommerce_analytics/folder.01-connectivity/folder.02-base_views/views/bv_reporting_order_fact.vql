@@ -1,0 +1,49 @@
+﻿# REQUIRES-PROPERTIES-FILE - # Do not remove this comment!
+CREATE OR REPLACE WRAPPER JDBC rt_reporting_order_fact
+    FOLDER = '/01-connectivity/02-base_views'
+    DATASOURCENAME=ds_postgres_orders
+    CATALOGNAME='${databases.ecommerce_analytics.folder.01-connectivity.folder.02-base_views.views.jdbc.rt_reporting_order_fact.CATALOGNAME}' 
+    SCHEMANAME='${databases.ecommerce_analytics.folder.01-connectivity.folder.02-base_views.views.jdbc.rt_reporting_order_fact.SCHEMANAME}' ESCAPE
+    RELATIONNAME='rt_reporting_order_fact' 
+    OUTPUTSCHEMA (
+        order_date = 'order_date' :'java.time.LocalDate' (OPT) (sourcetypedecimals='0', sourcetyperadix='10', sourcetypesize='13', sourcetypeid='91', sourcetypename='date')  SORTABLE,
+        country = 'country' :'java.lang.String' (OPT) (sourcetypedecimals='0', sourcetyperadix='10', sourcetypesize='50', sourcetypeid='12', sourcetypename='varchar')  SORTABLE,
+        city = 'city' :'java.lang.String' (OPT) (sourcetypedecimals='0', sourcetyperadix='10', sourcetypesize='50', sourcetypeid='12', sourcetypename='varchar')  SORTABLE,
+        customer_segment = 'customer_segment' :'java.lang.String' (OPT) (sourcetypedecimals='0', sourcetyperadix='10', sourcetypesize='20', sourcetypeid='12', sourcetypename='varchar')  SORTABLE,
+        category = 'category' :'java.lang.String' (OPT) (sourcetypedecimals='0', sourcetyperadix='10', sourcetypesize='2147483647', sourcetypeid='12', sourcetypename='varchar')  SORTABLE,
+        brand = 'brand' :'java.lang.String' (OPT) (sourcetypedecimals='0', sourcetyperadix='10', sourcetypesize='2147483647', sourcetypeid='12', sourcetypename='varchar')  SORTABLE,
+        order_count = 'order_count' :'java.lang.Long' (OPT) (sourcetypedecimals='0', sourcetyperadix='10', sourcetypesize='19', sourcetypeid='-5', sourcetypename='int8')  SORTABLE,
+        total_sales = 'total_sales' :'java.math.BigDecimal' (OPT) (sourcetypedecimals='20', sourcetyperadix='10', sourcetypesize='38', sourcetypeid='2', sourcetypename='numeric')  SORTABLE
+    );
+
+CREATE OR REPLACE TABLE bv_reporting_order_fact I18N au_cst (
+        order_date:localdate (sourcetypeid = '91', sourcetyperadix = '10', sourcetypedecimals = '0', sourcetypesize = '13'),
+        country:text (sourcetypeid = '-9', sourcetyperadix = '10', sourcetypedecimals = '0', sourcetypesize = '50'),
+        city:text (sourcetypeid = '-9', sourcetyperadix = '10', sourcetypedecimals = '0', sourcetypesize = '50'),
+        customer_segment:text (sourcetypeid = '-9', sourcetyperadix = '10', sourcetypedecimals = '0', sourcetypesize = '20'),
+        category:text (sourcetypeid = '-9', sourcetyperadix = '10', sourcetypedecimals = '0', sourcetypesize = '2147483647'),
+        brand:text (sourcetypeid = '-9', sourcetyperadix = '10', sourcetypedecimals = '0', sourcetypesize = '2147483647'),
+        order_count:long (sourcetypeid = '-5', sourcetyperadix = '10', sourcetypedecimals = '0', sourcetypesize = '19'),
+        total_sales:decimal (sourcetypeid = '2', sourcetyperadix = '10', sourcetypedecimals = '20', sourcetypesize = '38')
+    )
+    FOLDER = '/01-connectivity/02-base_views'
+    CACHE OFF
+    TIMETOLIVEINCACHE DEFAULT
+    ADD SEARCHMETHOD rt_reporting_order_fact(
+        I18N au_cst
+        CONSTRAINTS (
+             ADD order_date (any) OPT ANY
+             ADD country (any) OPT ANY
+             ADD city (any) OPT ANY
+             ADD customer_segment (any) OPT ANY
+             ADD category (any) OPT ANY
+             ADD brand (any) OPT ANY
+             ADD order_count (any) OPT ANY
+             ADD total_sales (any) OPT ANY
+        )
+        OUTPUTLIST (brand, category, city, country, customer_segment, order_count, order_date, total_sales
+        )
+        WRAPPER (jdbc rt_reporting_order_fact)
+    )
+    DATA_LOAD_QUERY = 'SELECT * FROM iv_order_fact';
+

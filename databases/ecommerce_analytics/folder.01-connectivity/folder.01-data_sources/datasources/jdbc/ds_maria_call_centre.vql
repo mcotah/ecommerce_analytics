@@ -1,0 +1,29 @@
+﻿# REQUIRES-PROPERTIES-FILE - # Do not remove this comment!
+CREATE OR REPLACE DATASOURCE JDBC ds_maria_call_centre
+    FOLDER = '/01-connectivity/01-data_sources'
+    DRIVERCLASSNAME = 'org.mariadb.jdbc.Driver'
+    DATABASEURI = '${databases.ecommerce_analytics.folder.01-connectivity.folder.01-data_sources.datasources.jdbc.ds_maria_call_centre.DATABASEURI}'
+    USERNAME = '${databases.ecommerce_analytics.folder.01-connectivity.folder.01-data_sources.datasources.jdbc.ds_maria_call_centre.USERNAME}'
+    USERPASSWORD = '${databases.ecommerce_analytics.folder.01-connectivity.folder.01-data_sources.datasources.jdbc.ds_maria_call_centre.USERPASSWORD}' ${databases.ecommerce_analytics.folder.01-connectivity.folder.01-data_sources.datasources.jdbc.ds_maria_call_centre.USERPASSWORD.ENCRYPTED}
+    CLASSPATH = 'mariadb'
+    DATABASENAME = 'Generic'
+    DATABASEVERSION = ''
+    FETCHSIZE = 1000
+    VALIDATIONQUERY = ''
+    INITIALSIZE = 4
+    MAXIDLE = -1
+    MINIDLE = 0
+    MAXACTIVE = 20
+    EXHAUSTEDACTION = 1
+    TESTONBORROW = true
+    TESTONRETURN = false
+    TESTWHILEIDLE = false
+    TIMEBETWEENEVICTION = -1
+    NUMTESTPEREVICTION = 3
+    MINEVICTABLETIME = 1800000
+    POOLPREPAREDSTATEMENTS = false
+    MAXOPENPREPAREDSTATEMENTS = -1
+    DATA_LOAD_CONFIGURATION (
+        BATCHINSERTSIZE = 200
+    );
+

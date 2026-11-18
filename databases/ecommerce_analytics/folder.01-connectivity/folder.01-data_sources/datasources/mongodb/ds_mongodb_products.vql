@@ -1,0 +1,20 @@
+﻿# REQUIRES-PROPERTIES-FILE - # Do not remove this comment!
+CREATE OR REPLACE DATASOURCE MONGODB ds_mongodb_products
+    FOLDER = '/01-connectivity/01-data_sources'
+    CONNECTION (
+        HOST = '${databases.ecommerce_analytics.folder.01-connectivity.folder.01-data_sources.datasources.mongodb.ds_mongodb_products.HOST}'
+        PORT = ${databases.ecommerce_analytics.folder.01-connectivity.folder.01-data_sources.datasources.mongodb.ds_mongodb_products.PORT}
+    )
+    AUTHENTICATION (
+        AUTH_DATABASE = '${databases.ecommerce_analytics.folder.01-connectivity.folder.01-data_sources.datasources.mongodb.ds_mongodb_products.AUTH_DATABASE}'
+        USERNAME = '${databases.ecommerce_analytics.folder.01-connectivity.folder.01-data_sources.datasources.mongodb.ds_mongodb_products.USERNAME}'
+        USERPASSWORD = '${databases.ecommerce_analytics.folder.01-connectivity.folder.01-data_sources.datasources.mongodb.ds_mongodb_products.USERPASSWORD}' ${databases.ecommerce_analytics.folder.01-connectivity.folder.01-data_sources.datasources.mongodb.ds_mongodb_products.USERPASSWORD.ENCRYPTED}
+     )
+    POOL (
+        MAXACTIVE = 100
+        MINACTIVE = 0
+        CONNECTTIMEOUT = 10000
+        SOCKETTIMEOUT = 0
+        WAITQUEUETIMEOUT = 120000
+    );
+

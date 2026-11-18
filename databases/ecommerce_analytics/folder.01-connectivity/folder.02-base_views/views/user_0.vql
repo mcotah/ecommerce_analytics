@@ -1,0 +1,101 @@
+﻿CREATE OR REPLACE WRAPPER LDAP user_0
+    FOLDER = '/01-connectivity/02-base_views'
+    DATASOURCENAME=ds_local_ldap
+    OBJECTCLASSES='user', 'person'
+    RECURSIVESEARCH=TRUE
+    SINGLE-VALUE=FALSE
+    OUTPUTSCHEMA (
+        cn = 'cn' : ARRAY OF (
+            cn = 'CN' : REGISTER OF (
+                cn = 'cn' : 'java.lang.String' (OPT)
+            )
+        ),
+        description = 'description' : ARRAY OF (
+            description = 'DESCRIPTION' : REGISTER OF (
+                description = 'description' : 'java.lang.String' (OPT)
+            )
+        ),
+        seealso = 'seeAlso' : ARRAY OF (
+            seealso = 'seeAlso' : REGISTER OF (
+                seealso = 'seeAlso' : 'java.lang.String' (OPT)
+            )
+        ),
+        sn = 'sn' : ARRAY OF (
+            sn = 'SN' : REGISTER OF (
+                sn = 'sn' : 'java.lang.String' (OPT)
+            )
+        ),
+        telephonenumber = 'telephoneNumber' : ARRAY OF (
+            telephonenumber = 'telephoneNumber' : REGISTER OF (
+                telephonenumber = 'telephoneNumber' : 'java.lang.String' (OPT)
+            )
+        ),
+        userpassword = 'userPassword' : ARRAY OF (
+            userpassword = 'userPassword' : REGISTER OF (
+                userpassword = 'userPassword' : 'java.lang.String' (OPT)
+            )
+        )
+    );
+
+CREATE OR REPLACE TYPE user_0_cn_cn AS REGISTER OF (cn:text);
+
+CREATE OR REPLACE TYPE user_0_cn AS ARRAY OF user_0_cn_cn;
+
+CREATE OR REPLACE TYPE user_0_description_description AS REGISTER OF (description:text);
+
+CREATE OR REPLACE TYPE user_0_description AS ARRAY OF user_0_description_description;
+
+CREATE OR REPLACE TYPE user_0_seealso_seealso AS REGISTER OF (seealso:text);
+
+CREATE OR REPLACE TYPE user_0_seealso AS ARRAY OF user_0_seealso_seealso;
+
+CREATE OR REPLACE TYPE user_0_sn_sn AS REGISTER OF (sn:text);
+
+CREATE OR REPLACE TYPE user_0_sn AS ARRAY OF user_0_sn_sn;
+
+CREATE OR REPLACE TYPE user_0_telephonenumber_telephonenumber AS REGISTER OF (telephonenumber:text);
+
+CREATE OR REPLACE TYPE user_0_telephonenumber AS ARRAY OF user_0_telephonenumber_telephonenumber;
+
+CREATE OR REPLACE TYPE user_0_userpassword_userpassword AS REGISTER OF (userpassword:text);
+
+CREATE OR REPLACE TYPE user_0_userpassword AS ARRAY OF user_0_userpassword_userpassword;
+
+CREATE OR REPLACE TABLE user_0 I18N au_cst (
+        cn:user_0_cn,
+        description:user_0_description,
+        seealso:user_0_seealso,
+        sn:user_0_sn,
+        telephonenumber:user_0_telephonenumber,
+        userpassword:user_0_userpassword
+    )
+    FOLDER = '/01-connectivity/02-base_views'
+    CACHE OFF
+    TIMETOLIVEINCACHE DEFAULT
+    ADD SEARCHMETHOD user_0(
+        I18N au_cst
+        CONSTRAINTS (
+             ADD cn NOS ZERO ()
+             ADD cn NOS ZERO ()
+             ADD cn.cn (any) OPT ANY
+             ADD description NOS ZERO ()
+             ADD description NOS ZERO ()
+             ADD description.description (any) OPT ANY
+             ADD seealso NOS ZERO ()
+             ADD seealso NOS ZERO ()
+             ADD seealso.seealso (any) OPT ANY
+             ADD sn NOS ZERO ()
+             ADD sn NOS ZERO ()
+             ADD sn.sn (any) OPT ANY
+             ADD telephonenumber NOS ZERO ()
+             ADD telephonenumber NOS ZERO ()
+             ADD telephonenumber.telephonenumber (any) OPT ANY
+             ADD userpassword NOS ZERO ()
+             ADD userpassword NOS ZERO ()
+             ADD userpassword.userpassword (any) OPT ANY
+        )
+        OUTPUTLIST (cn, description, seealso, sn, telephonenumber, userpassword
+        )
+        WRAPPER (ldap user_0)
+    );
+

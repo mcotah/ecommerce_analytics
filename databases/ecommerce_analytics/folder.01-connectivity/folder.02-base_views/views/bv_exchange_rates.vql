@@ -1,0 +1,45 @@
+﻿# REQUIRES-PROPERTIES-FILE - # Do not remove this comment!
+CREATE OR REPLACE WRAPPER JSON bv_exchange_rates
+    FOLDER = '/01-connectivity/02-base_views'
+    DATASOURCENAME=ds_exchange_rates
+    TUPLEROOT '/JSONFile'
+    ROUTE HTTP 'http.ApacheHttpClientConnection,120000' GET '${databases.ecommerce_analytics.folder.01-connectivity.folder.02-base_views.views.json.bv_exchange_rates.ROUTE.HTTP.URL}'
+    OUTPUTSCHEMA (jsonfile = 'JSONFile' : REGISTER OF (
+        base_currency = 'base_currency' : 'java.lang.String',
+        last_updated = 'last_updated' : 'java.lang.String',
+        rates = 'rates' : ARRAY OF (
+            rates = 'rates' : REGISTER OF (
+                currency = 'currency' : 'java.lang.String',
+                rate = 'rate' : 'java.lang.Double'
+            )
+        )
+    )
+    );
+
+CREATE OR REPLACE TYPE bv_exchange_rates_rates_rates AS REGISTER OF (currency:text, rate:double);
+
+CREATE OR REPLACE TYPE bv_exchange_rates_rates AS ARRAY OF bv_exchange_rates_rates_rates;
+
+CREATE OR REPLACE TABLE bv_exchange_rates I18N au_cst (
+        base_currency:text,
+        last_updated:text,
+        rates:bv_exchange_rates_rates
+    )
+    FOLDER = '/01-connectivity/02-base_views'
+    CACHE OFF
+    TIMETOLIVEINCACHE DEFAULT
+    ADD SEARCHMETHOD bv_exchange_rates(
+        I18N au_cst
+        CONSTRAINTS (
+             ADD base_currency NOS ZERO ()
+             ADD last_updated NOS ZERO ()
+             ADD rates NOS ZERO ()
+             ADD rates NOS ZERO ()
+             ADD rates.currency NOS ZERO ()
+             ADD rates.rate NOS ZERO ()
+        )
+        OUTPUTLIST (base_currency, last_updated, rates
+        )
+        WRAPPER (json bv_exchange_rates)
+    );
+

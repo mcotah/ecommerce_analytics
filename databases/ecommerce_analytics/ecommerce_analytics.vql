@@ -1,0 +1,10 @@
+﻿CREATE OR REPLACE DATABASE ecommerce_analytics 'Unified e-commerce analytics platform integrating relational, NoSQL, and REST data sources for sales reporting and business insights.';
+
+ALTER DATABASE ecommerce_analytics
+  CHARSET DEFAULT;
+
+ALTER DATABASE ecommerce_analytics
+  COST OPTIMIZATION ON
+  QUERY SIMPLIFICATION ON
+  SUMMARY REWRITE ON;
+

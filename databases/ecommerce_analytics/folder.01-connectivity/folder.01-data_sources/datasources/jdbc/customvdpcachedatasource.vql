@@ -1,0 +1,29 @@
+﻿# REQUIRES-PROPERTIES-FILE - # Do not remove this comment!
+CREATE OR REPLACE DATASOURCE JDBC customvdpcachedatasource
+    FOLDER = '/01-connectivity/01-data_sources'
+    DRIVERCLASSNAME = 'org.apache.derby.jdbc.ClientDriver'
+    DATABASEURI = '${databases.ecommerce_analytics.folder.01-connectivity.folder.01-data_sources.datasources.jdbc.customvdpcachedatasource.DATABASEURI}'
+    USERNAME = '${databases.ecommerce_analytics.folder.01-connectivity.folder.01-data_sources.datasources.jdbc.customvdpcachedatasource.USERNAME}'
+    USERPASSWORD = '${databases.ecommerce_analytics.folder.01-connectivity.folder.01-data_sources.datasources.jdbc.customvdpcachedatasource.USERPASSWORD}' ${databases.ecommerce_analytics.folder.01-connectivity.folder.01-data_sources.datasources.jdbc.customvdpcachedatasource.USERPASSWORD.ENCRYPTED}
+    CLASSPATH = 'derby-10'
+    DATABASENAME = 'derby'
+    DATABASEVERSION = '10'
+    FETCHSIZE = 1000
+    VALIDATIONQUERY = 'values 1'
+    INITIALSIZE = 4
+    MAXIDLE = -1
+    MINIDLE = 0
+    MAXACTIVE = 20
+    EXHAUSTEDACTION = 1
+    TESTONBORROW = true
+    TESTONRETURN = false
+    TESTWHILEIDLE = false
+    TIMEBETWEENEVICTION = -1
+    NUMTESTPEREVICTION = 3
+    MINEVICTABLETIME = 1800000
+    POOLPREPAREDSTATEMENTS = false
+    MAXOPENPREPAREDSTATEMENTS = -1
+    DATA_LOAD_CONFIGURATION (
+        BATCHINSERTSIZE = 200
+    );
+

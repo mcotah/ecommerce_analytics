@@ -1,0 +1,37 @@
+﻿CREATE OR REPLACE WRAPPER MONGODB products
+    FOLDER = '/01-connectivity/02-base_views'
+    DATASOURCENAME=ds_mongodb_products
+    DATABASE = 'ecommerce'
+    COLLECTION = 'products'
+    LIMITDOCUMENTS = 150
+    OUTPUTSCHEMA (
+        _id = '_id' : 'java.lang.String' SORTABLE NOT UPDATEABLE,
+        product_id = 'product_id' : 'java.lang.Integer' SORTABLE,
+        product_name = 'product_name' : 'java.lang.String' SORTABLE,
+        category = 'category' : 'java.lang.String' SORTABLE,
+        brand = 'brand' : 'java.lang.String' SORTABLE
+    );
+
+CREATE OR REPLACE TABLE bv_products I18N au_cst (
+        product_id:int,
+        product_name:text,
+        category:text,
+        brand:text
+    )
+    FOLDER = '/01-connectivity/02-base_views'
+    PRIMARY KEY ( 'product_id' )
+    CACHE OFF
+    TIMETOLIVEINCACHE DEFAULT
+    ADD SEARCHMETHOD products(
+        I18N au_cst
+        CONSTRAINTS (
+             ADD product_id NOS ZERO ()
+             ADD product_name NOS ZERO ()
+             ADD category NOS ZERO ()
+             ADD brand NOS ZERO ()
+        )
+        OUTPUTLIST (brand, category, product_id, product_name
+        )
+        WRAPPER (mongodb products)
+    );
+

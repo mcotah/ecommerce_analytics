@@ -1,0 +1,42 @@
+﻿# REQUIRES-PROPERTIES-FILE - # Do not remove this comment!
+CREATE OR REPLACE WRAPPER JDBC s_order_fact_summary
+    FOLDER = '/05-summaries'
+    DATASOURCENAME=denodo_training.ds_historical_orders
+    CATALOGNAME='${databases.ecommerce_analytics.folder.05-summaries.views.jdbc.s_order_fact_summary.CATALOGNAME}' 
+    SCHEMANAME='${databases.ecommerce_analytics.folder.05-summaries.views.jdbc.s_order_fact_summary.SCHEMANAME}' ESCAPE
+    RELATIONNAME='sum_order_fact' 
+    OUTPUTSCHEMA (
+        category = 'category' :'java.lang.String' (OPT) (sourcetypedecimals='0', sourcetyperadix='10', sourcetypesize='2147483647', sourcetypeid='12', sourcetypename='varchar')  SORTABLE,
+        customer_segment = 'customer_segment' :'java.lang.String' (OPT) (sourcetypedecimals='0', sourcetyperadix='10', sourcetypesize='20', sourcetypeid='12', sourcetypename='varchar')  SORTABLE,
+        country = 'country' :'java.lang.String' (OPT) (sourcetypedecimals='0', sourcetyperadix='10', sourcetypesize='50', sourcetypeid='12', sourcetypename='varchar')  SORTABLE,
+        total_orders = 'total_orders' :'java.lang.Long' (OPT) (sourcetypedecimals='0', sourcetyperadix='10', sourcetypesize='19', sourcetypeid='-5', sourcetypename='int8')  SORTABLE,
+        total_revenue = 'total_revenue' :'java.math.BigDecimal' (OPT) (sourcetypedecimals='20', sourcetyperadix='10', sourcetypesize='38', sourcetypeid='2', sourcetypename='numeric')  SORTABLE
+    );
+
+CREATE OR REPLACE SUMMARY VIEW s_order_fact_summary (
+        category:text (sourcetypeid = '-9', sourcetyperadix = '10', sourcetypedecimals = '0', sourcetypesize = '2147483647'),
+        customer_segment:text (sourcetypeid = '-9', sourcetyperadix = '10', sourcetypedecimals = '0', sourcetypesize = '20'),
+        country:text (sourcetypeid = '-9', sourcetyperadix = '10', sourcetypedecimals = '0', sourcetypesize = '50'),
+        total_orders:long (sourcetypeid = '-5', sourcetyperadix = '10', sourcetypedecimals = '0', sourcetypesize = '19'),
+        total_revenue:decimal (sourcetypeid = '2', sourcetyperadix = '10', sourcetypedecimals = '20', sourcetypesize = '38')
+    )
+    FOLDER = '/05-summaries'
+    ADD SEARCHMETHOD s_order_fact_summary(
+        I18N au_cst
+        CONSTRAINTS (
+             ADD category (any) OPT ANY
+             ADD customer_segment (any) OPT ANY
+             ADD country (any) OPT ANY
+             ADD total_orders (any) OPT ANY
+             ADD total_revenue (any) OPT ANY
+        )
+        OUTPUTLIST (category, country, customer_segment, total_orders, total_revenue
+        )
+        WRAPPER (jdbc s_order_fact_summary)
+    )
+    SMART_THEN_ATSOURCE_THROUGH_VDP
+AS SELECT iv_order_fact.category AS category, iv_order_fact.customer_segment AS customer_segment, iv_order_fact.country AS country, total_orders AS total_orders, total_revenue AS total_revenue FROM (SELECT category, customer_segment, country, sum(order_count) AS total_orders, sum(total_sales) AS total_revenue FROM iv_order_fact GROUP BY category, customer_segment, country);
+
+ALTER VIEW s_order_fact_summary
+ DELEGATESTATSQUERY = true GET_TABLE_STATS = true SMART_THEN_ATSOURCE_THROUGH_VDP;
+

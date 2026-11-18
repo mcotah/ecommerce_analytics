@@ -1,0 +1,9 @@
+﻿CREATE OR REPLACE VIEW bv_exchange_rates_flat FOLDER = '/01-connectivity/02-base_views' AS SELECT base_currency AS base_currency, last_updated AS last_updated, currency AS currency, rate AS rate FROM FLATTEN bv_exchange_rates AS v ( v.rates);
+
+ALTER VIEW bv_exchange_rates_flat
+ LAYOUT (bv_exchange_rates = [20, 20, 200, 200]);
+
+ALTER VIEW bv_exchange_rates_flat
+ CACHE PARTIAL
+    BATCHSIZEINCACHE DEFAULT TIMETOLIVEINCACHE NOEXPIRE;
+

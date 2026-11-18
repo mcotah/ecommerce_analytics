@@ -1,0 +1,12 @@
+﻿CREATE OR REPLACE VIEW iv_order_dim FOLDER = '/02-integration_views'
+    PRIMARY KEY ( 'order_id' ) AS SELECT bv_orders.order_date AS order_date, bv_orders.order_id AS order_id, bv_orders.customer_id AS customer_id, bv_customers.customer_name AS customer_name, bv_customers.email AS email, bv_customers.city AS city, bv_customers.country AS country, bv_customers.customer_segment AS customer_segment, bv_orders.product_id AS product_id, bv_products.product_name AS product_name, bv_products.category AS category, bv_products.brand AS brand, bv_orders.quantity AS quantity, bv_orders.amount AS amount, bv_orders.currency AS currency, bv_exchange_rates_flat.base_currency AS base_currency, bv_exchange_rates_flat.last_updated AS last_updated, bv_exchange_rates_flat.rate AS rate, coalesce((bv_orders.amount*bv_exchange_rates_flat.rate), bv_orders.amount) AS amount_base_currency FROM ((bv_orders AS bv_orders INNER JOIN bv_customers AS bv_customers ON bv_orders.customer_id = bv_customers.customer_id ) INNER JOIN bv_products AS bv_products ON bv_orders.product_id = bv_products.product_id ) LEFT OUTER JOIN bv_exchange_rates_flat AS bv_exchange_rates_flat ON bv_orders.currency = bv_exchange_rates_flat.currency ;
+
+ALTER VIEW iv_order_dim
+ LAYOUT (bv_orders = [376, 65, 200, 200], bv_customers = [74, 1, 200, 200], bv_products = [389, 252, 200, 200], bv_exchange_rates_flat = [748, 199, 200, 200]);
+
+ALTER VIEW iv_order_dim
+ CACHE FULL NO_STATUS
+    BATCHSIZEINCACHE DEFAULT TIMETOLIVEINCACHE NOEXPIRE
+    ONSCHEMACHANGE RECREATE INCREMENTAL_LOAD
+ DELEGATESTATSQUERY = true GET_TABLE_STATS = true ATSOURCE_THROUGH_VDP_ONLY;
+

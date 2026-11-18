@@ -1,0 +1,4 @@
+﻿*/databases/ecommerce_analytics/folder.01-connectivity/01-connectivity.vql
+1/databases/ecommerce_analytics/folder.01-connectivity/folder.02-base_views/02-base_views.vql
+*/databases/ecommerce_analytics/folder.01-connectivity/folder.01-data_sources/01-data_sources.vql
+1/databases/ecommerce_analytics/folder.01-connectivity/folder.01-data_sources/datasources/jdbc/ds_postgres_orders.vql

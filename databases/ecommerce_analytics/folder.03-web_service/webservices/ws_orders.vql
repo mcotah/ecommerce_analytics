@@ -1,0 +1,51 @@
+﻿CREATE OR REPLACE REST WEBSERVICE ws_orders
+    CONNECTION (
+        CHUNKSIZE = 1000
+        CHUNKTIMEOUT = 1000
+        QUERYTIMEOUT = 900000
+        POOLENABLED = true
+        POOLINITSIZE = 0
+        POOLMAXACTIVE = 30
+    )
+    DEFAULTREPRESENTATION = HTML
+    SUPPORTEDREPRESENTATIONS (HTML, XML, JSON)    AUTHENTICATION (BASIC
+    USER ''
+    PASSWORD 'p1mMh15IENUFmdJVm3lqsJUI0C4M5nHqc+JnTkZ332nOj0YmfIBa6wrgcYZyK4P6/ZwnM6qCQNtuVb8hm0grJEwgKkrs4aZ6ATu3esEl+/Et4vXOghr4p94U+D29yuOb' ENCRYPTED )
+
+    RESOURCES (
+        VIEW iv_order_dim FIELDS (
+            order_date : 'localdate', 
+            order_id : 'int', 
+            customer_id : 'int', 
+            customer_name : 'text', 
+            email : 'text', 
+            city : 'text', 
+            country : 'text', 
+            customer_segment : 'text', 
+            product_id : 'int', 
+            product_name : 'text', 
+            category : 'text', 
+            brand : 'text', 
+            quantity : 'int', 
+            amount : 'decimal', 
+            currency : 'text', 
+            rate : 'double', 
+            amount_base_currency : 'decimal'
+        ),
+        VIEW iv_order_fact FIELDS (
+            order_date : 'localdate', 
+            country : 'text', 
+            city : 'text', 
+            customer_segment : 'text', 
+            category : 'text', 
+            brand : 'text', 
+            order_count : 'long', 
+            total_sales : 'decimal'
+        )
+    )
+    OPTIONS ( NULLVALUESASEMPTYXMLELEMENTS = false
+        ALLOW_CORS_ORIGINS (*) DISABLED
+        PROCESS_FUNCTIONS_IN_SELECT_PARAMETER = true ) 
+    OPENAPI2 ( API_VERSION = '1.0.0' ) 
+    FOLDER = '/03-web_service';
+

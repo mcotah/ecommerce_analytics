@@ -1,0 +1,44 @@
+﻿# REQUIRES-PROPERTIES-FILE - # Do not remove this comment!
+CREATE OR REPLACE WRAPPER JDBC customers
+    FOLDER = '/01-connectivity/02-base_views'
+    DATASOURCENAME=ds_mysql_customer_mart
+    CATALOGNAME='${databases.ecommerce_analytics.folder.01-connectivity.folder.02-base_views.views.jdbc.customers.CATALOGNAME}' 
+    RELATIONNAME='customers' 
+    OUTPUTSCHEMA (
+        customer_id = 'customer_id' :'java.lang.Integer' (OPT) (sourcetyperadix='10', sourcetypesize='10', description='', sourcetypeid='4', sourcetypename='INT')  NOT NULL SORTABLE,
+        customer_name = 'customer_name' :'java.lang.String' (OPT) (sourcetyperadix='10', sourcetypesize='100', description='', sourcetypeid='12', sourcetypename='VARCHAR')  NOT NULL SORTABLE,
+        email = 'email' :'java.lang.String' (OPT) (sourcetyperadix='10', sourcetypesize='150', description='', sourcetypeid='12', sourcetypename='VARCHAR')  SORTABLE,
+        city = 'city' :'java.lang.String' (OPT) (sourcetyperadix='10', sourcetypesize='50', description='', sourcetypeid='12', sourcetypename='VARCHAR')  SORTABLE,
+        country = 'country' :'java.lang.String' (OPT) (sourcetyperadix='10', sourcetypesize='50', description='', sourcetypeid='12', sourcetypename='VARCHAR')  SORTABLE,
+        customer_segment = 'customer_segment' :'java.lang.String' (OPT) (sourcetyperadix='10', sourcetypesize='20', description='', sourcetypeid='12', sourcetypename='VARCHAR')  SORTABLE
+    )
+    CONSTRAINT 'PRIMARY' PRIMARY KEY ( 'customer_id' )
+    INDEX 'PRIMARY' CLUSTER UNIQUE PRIMARY ( 'customer_id' );
+
+CREATE OR REPLACE TABLE bv_customers I18N au_cst (
+        customer_id:int (notnull, sourcetypeid = '4', sourcetyperadix = '10', sourcetypesize = '10', description = ''),
+        customer_name:text (notnull, sourcetypeid = '12', sourcetyperadix = '10', sourcetypesize = '100', description = ''),
+        email:text (sourcetypeid = '12', sourcetyperadix = '10', sourcetypesize = '150', description = ''),
+        city:text (sourcetypeid = '12', sourcetyperadix = '10', sourcetypesize = '50', description = ''),
+        country:text (sourcetypeid = '12', sourcetyperadix = '10', sourcetypesize = '50', description = ''),
+        customer_segment:text (sourcetypeid = '12', sourcetyperadix = '10', sourcetypesize = '20', description = '')
+    )
+    FOLDER = '/01-connectivity/02-base_views'
+    CONSTRAINT 'PRIMARY' PRIMARY KEY ( 'customer_id' )
+    CACHE OFF
+    TIMETOLIVEINCACHE DEFAULT
+    ADD SEARCHMETHOD customers(
+        I18N au_cst
+        CONSTRAINTS (
+             ADD customer_id (any) OPT ANY
+             ADD customer_name (any) OPT ANY
+             ADD email (any) OPT ANY
+             ADD city (any) OPT ANY
+             ADD country (any) OPT ANY
+             ADD customer_segment (any) OPT ANY
+        )
+        OUTPUTLIST (city, country, customer_id, customer_name, customer_segment, email
+        )
+        WRAPPER (jdbc customers)
+    );
+

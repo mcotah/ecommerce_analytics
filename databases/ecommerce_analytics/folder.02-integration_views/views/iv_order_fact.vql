@@ -1,0 +1,6 @@
+﻿CREATE OR REPLACE VIEW iv_order_fact FOLDER = '/02-integration_views'
+    PRIMARY KEY ( 'order_date' , 'country' , 'city' , 'customer_segment' , 'category' , 'brand' ) AS SELECT order_date AS order_date, country AS country, city AS city, customer_segment AS customer_segment, category AS category, brand AS brand, count(order_id) AS order_count, sum(amount_base_currency) AS total_sales FROM iv_order_dim GROUP BY order_date, country, city, customer_segment, category, brand ORDER BY order_date ASC, country ASC, city ASC, customer_segment ASC, category ASC, brand ASC, total_sales DESC, order_count DESC;
+
+ALTER VIEW iv_order_fact
+ LAYOUT (iv_order_dim = [20, 20, 200, 200]);
+

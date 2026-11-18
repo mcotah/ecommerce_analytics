@@ -1,0 +1,47 @@
+﻿# REQUIRES-PROPERTIES-FILE - # Do not remove this comment!
+CREATE OR REPLACE WRAPPER JDBC bv_orders
+    FOLDER = '/01-connectivity/02-base_views'
+    DATASOURCENAME=ds_postgres_orders
+    SCHEMANAME='${databases.ecommerce_analytics.folder.01-connectivity.folder.02-base_views.views.jdbc.bv_orders.SCHEMANAME}' 
+    RELATIONNAME='orders' 
+    OUTPUTSCHEMA (
+        order_id = 'order_id' :'java.lang.Integer' (OPT) (sourcetypedecimals='0', sourcetyperadix='10', sourcetypesize='10', sourcetypeid='4', sourcetypename='int4')  NOT NULL SORTABLE,
+        customer_id = 'customer_id' :'java.lang.Integer' (OPT) (sourcetypedecimals='0', sourcetyperadix='10', sourcetypesize='10', sourcetypeid='4', sourcetypename='int4')  SORTABLE,
+        product_id = 'product_id' :'java.lang.Integer' (OPT) (sourcetypedecimals='0', sourcetyperadix='10', sourcetypesize='10', sourcetypeid='4', sourcetypename='int4')  SORTABLE,
+        quantity = 'quantity' :'java.lang.Integer' (OPT) (sourcetypedecimals='0', sourcetyperadix='10', sourcetypesize='10', sourcetypeid='4', sourcetypename='int4')  SORTABLE,
+        amount = 'amount' :'java.math.BigDecimal' (OPT) (sourcetypedecimals='2', sourcetyperadix='10', sourcetypesize='10', sourcetypeid='2', sourcetypename='numeric')  SORTABLE,
+        order_date = 'order_date' :'java.time.LocalDate' (OPT) (sourcetypedecimals='0', sourcetyperadix='10', sourcetypesize='13', sourcetypeid='91', sourcetypename='date')  SORTABLE,
+        currency = 'currency' :'java.lang.String' (OPT) (sourcetypedecimals='0', sourcetyperadix='10', sourcetypesize='3', sourcetypeid='12', sourcetypename='varchar')  SORTABLE
+    )
+    CONSTRAINT 'orders_pkey' PRIMARY KEY ( 'order_id' )
+    INDEX 'orders_pkey' OTHER UNIQUE PRIMARY ( 'order_id' );
+
+CREATE OR REPLACE TABLE bv_orders I18N au_cst (
+        order_id:int (notnull, sourcetypeid = '4', sourcetyperadix = '10', sourcetypedecimals = '0', sourcetypesize = '10'),
+        customer_id:int (sourcetypeid = '4', sourcetyperadix = '10', sourcetypedecimals = '0', sourcetypesize = '10'),
+        product_id:int (sourcetypeid = '4', sourcetyperadix = '10', sourcetypedecimals = '0', sourcetypesize = '10'),
+        quantity:int (sourcetypeid = '4', sourcetyperadix = '10', sourcetypedecimals = '0', sourcetypesize = '10'),
+        amount:decimal (sourcetypeid = '2', sourcetyperadix = '10', sourcetypedecimals = '2', sourcetypesize = '10'),
+        order_date:localdate (sourcetypeid = '91', sourcetyperadix = '10', sourcetypedecimals = '0', sourcetypesize = '13'),
+        currency:text (sourcetypeid = '-9', sourcetyperadix = '10', sourcetypedecimals = '0', sourcetypesize = '3')
+    )
+    FOLDER = '/01-connectivity/02-base_views'
+    CONSTRAINT 'orders_pkey' PRIMARY KEY ( 'order_id' )
+    CACHE OFF
+    TIMETOLIVEINCACHE DEFAULT
+    ADD SEARCHMETHOD bv_orders(
+        I18N au_cst
+        CONSTRAINTS (
+             ADD order_id (any) OPT ANY
+             ADD customer_id (any) OPT ANY
+             ADD product_id (any) OPT ANY
+             ADD quantity (any) OPT ANY
+             ADD amount (any) OPT ANY
+             ADD order_date (any) OPT ANY
+             ADD currency (any) OPT ANY
+        )
+        OUTPUTLIST (amount, currency, customer_id, order_date, order_id, product_id, quantity
+        )
+        WRAPPER (jdbc bv_orders)
+    );
+

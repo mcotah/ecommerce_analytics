@@ -1,0 +1,9 @@
+﻿# REQUIRES-PROPERTIES-FILE - # Do not remove this comment!
+CREATE OR REPLACE DATASOURCE LDAP ds_local_ldap
+    FOLDER = '/01-connectivity/01-data_sources'
+    URI='${databases.ecommerce_analytics.folder.01-connectivity.folder.01-data_sources.datasources.ldap.ds_local_ldap.URI}'
+    USERNAME='${databases.ecommerce_analytics.folder.01-connectivity.folder.01-data_sources.datasources.ldap.ds_local_ldap.USERNAME}'
+    USERPASSWORD='${databases.ecommerce_analytics.folder.01-connectivity.folder.01-data_sources.datasources.ldap.ds_local_ldap.USERPASSWORD}' ${databases.ecommerce_analytics.folder.01-connectivity.folder.01-data_sources.datasources.ldap.ds_local_ldap.USERPASSWORD.ENCRYPTED}
+    USEPAGING=FALSE
+    POOL_ENABLED = TRUE;
+

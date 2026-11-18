@@ -1,0 +1,8 @@
+﻿1/databases/ecommerce_analytics/folder.04-associations/04-associations.vql
+*/databases/ecommerce_analytics/folder.01-connectivity/01-connectivity.vql
+*/databases/ecommerce_analytics/folder.01-connectivity/folder.02-base_views/02-base_views.vql
+*/databases/ecommerce_analytics/folder.01-connectivity/folder.01-data_sources/01-data_sources.vql
+*/databases/ecommerce_analytics/folder.01-connectivity/folder.01-data_sources/datasources/jdbc/ds_mysql_customer_mart.vql
+1/databases/ecommerce_analytics/folder.01-connectivity/folder.02-base_views/views/bv_customers.vql
+*/databases/ecommerce_analytics/folder.01-connectivity/folder.01-data_sources/datasources/jdbc/ds_postgres_orders.vql
+1/databases/ecommerce_analytics/folder.01-connectivity/folder.02-base_views/views/bv_orders.vql

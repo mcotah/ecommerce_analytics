@@ -1,0 +1,5 @@
+﻿# REQUIRES-PROPERTIES-FILE - # Do not remove this comment!
+UNDEPLOY IF EXISTS WEBSERVICE ws_orders;
+
+DEPLOY WEBSERVICE ws_orders LOGIN = '${databases.ecommerce_analytics.webcontainer.webservices.ws_orders.LOGIN}' PASSWORD = '${databases.ecommerce_analytics.webcontainer.webservices.ws_orders.PASSWORD}' ${databases.ecommerce_analytics.webcontainer.webservices.ws_orders.PASSWORD.ENCRYPTED};
+

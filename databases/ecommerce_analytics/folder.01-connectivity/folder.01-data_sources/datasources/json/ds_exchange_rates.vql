@@ -1,0 +1,10 @@
+﻿# REQUIRES-PROPERTIES-FILE - # Do not remove this comment!
+CREATE OR REPLACE DATASOURCE JSON ds_exchange_rates
+    FOLDER = '/01-connectivity/01-data_sources'
+    ROUTE HTTP 'http.ApacheHttpClientConnection,120000' GET '${databases.ecommerce_analytics.folder.01-connectivity.folder.01-data_sources.datasources.json.ds_exchange_rates.ROUTE.HTTP.URL}'
+    CHECKCERTIFICATES
+    GENERATE_OUTPUT_ON_EMPTY_CONTENT
+ AUTHENTICATION OFF
+    PROXY OFF
+    CHARSET = 'UTF-8';
+
