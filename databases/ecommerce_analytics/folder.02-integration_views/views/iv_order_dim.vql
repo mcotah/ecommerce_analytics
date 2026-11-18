@@ -1,5 +1,27 @@
-﻿CREATE OR REPLACE VIEW iv_order_dim FOLDER = '/02-integration_views'
-    PRIMARY KEY ( 'order_id' ) AS SELECT bv_orders.order_date AS order_date, bv_orders.order_id AS order_id, bv_orders.customer_id AS customer_id, bv_customers.customer_name AS customer_name, bv_customers.email AS email, bv_customers.city AS city, bv_customers.country AS country, bv_customers.customer_segment AS customer_segment, bv_orders.product_id AS product_id, bv_products.product_name AS product_name, bv_products.category AS category, bv_products.brand AS brand, bv_orders.quantity AS quantity, bv_orders.amount AS amount, bv_orders.currency AS currency, bv_exchange_rates_flat.base_currency AS base_currency, bv_exchange_rates_flat.last_updated AS last_updated, bv_exchange_rates_flat.rate AS rate, coalesce((bv_orders.amount*bv_exchange_rates_flat.rate), bv_orders.amount) AS amount_base_currency FROM ((bv_orders AS bv_orders INNER JOIN bv_customers AS bv_customers ON bv_orders.customer_id = bv_customers.customer_id ) INNER JOIN bv_products AS bv_products ON bv_orders.product_id = bv_products.product_id ) LEFT OUTER JOIN bv_exchange_rates_flat AS bv_exchange_rates_flat ON bv_orders.currency = bv_exchange_rates_flat.currency ;
+﻿CREATE OR REPLACE VIEW iv_order_dim FOLDER = '/02-integration_views' DESCRIPTION = 'A consolidated e-commerce dimension/view capturing order-line details, customer demographics and segmentation, product catalog attributes, and multi-currency transaction metrics (amount, currency, base_currency, and FX rate) for cross-border sales and revenue reporting.' 
+    PRIMARY KEY ( 'order_id' )
+    TAGS (customer_data, sales_data) (
+    order_date (description = 'Unique identifier assigned to each customer order in the e-commerce platform.'),
+    order_id (description = 'Date and time when the customer submitted and placed the order.'),
+    customer_id (description = 'Unique identifier linking the order to a specific customer profile in the customer table.'),
+    customer_name (description = 'Full name of the customer who placed the order.') TAGS (customer_data, pii),
+    email (description = 'Primary email address associated with the customer account, used for order confirmations and notifications.') TAGS (customer_data, pii),
+    city (description = 'City of the customer''s billing or shipping address.'),
+    country (description = 'Country of the customer''s billing or shipping address (typically represented as a country name or ISO code).'),
+    customer_segment (description = 'Behavioral or value-based classification tier assigned to the customer (e.g., VIP, Returning, New, At-Risk).'),
+    product_id (description = 'Unique numeric identifier assigned to a specific product or SKU in the e-commerce catalog.'),
+    product_name (description = 'Display title of the purchased product as shown on the storefront.'),
+    category (description = 'Primary merchandise classification or department the product belongs to (e.g., Electronics, Apparel, Home).'),
+    brand (description = 'Manufacturer, designer, or brand label associated with the product.'),
+    quantity (description = 'Total number of units of the product purchased in a single line item or order.'),
+    amount (description = 'Total monetary value of the transaction or line item in the original transaction currency.'),
+    currency (description = 'Three-letter ISO 4217 currency code (e.g., USD, EUR, INR) in which the customer paid.'),
+    base_currency (description = 'Standardized reporting currency (e.g., USD) used by the business for consolidated financial analytics.'),
+    last_updated (description = 'Timestamp or date string indicating when the record or exchange rate was last modified'),
+    rate (description = 'Foreign exchange conversion rate applied to convert the transaction amount from currency to base_currency.'),
+    amount_base_currency (description = 'transaction amount converted to base_currency.')
+ )
+ AS SELECT bv_orders.order_date AS order_date, bv_orders.order_id AS order_id, bv_orders.customer_id AS customer_id, bv_customers.customer_name AS customer_name, bv_customers.email AS email, bv_customers.city AS city, bv_customers.country AS country, bv_customers.customer_segment AS customer_segment, bv_orders.product_id AS product_id, bv_products.product_name AS product_name, bv_products.category AS category, bv_products.brand AS brand, bv_orders.quantity AS quantity, bv_orders.amount AS amount, bv_orders.currency AS currency, bv_exchange_rates_flat.base_currency AS base_currency, bv_exchange_rates_flat.last_updated AS last_updated, bv_exchange_rates_flat.rate AS rate, coalesce((bv_orders.amount*bv_exchange_rates_flat.rate), bv_orders.amount) AS amount_base_currency FROM ((bv_orders AS bv_orders INNER JOIN bv_customers AS bv_customers ON bv_orders.customer_id = bv_customers.customer_id ) INNER JOIN bv_products AS bv_products ON bv_orders.product_id = bv_products.product_id ) LEFT OUTER JOIN bv_exchange_rates_flat AS bv_exchange_rates_flat ON bv_orders.currency = bv_exchange_rates_flat.currency ;
 
 ALTER VIEW iv_order_dim
  LAYOUT (bv_orders = [376, 65, 200, 200], bv_customers = [74, 1, 200, 200], bv_products = [389, 252, 200, 200], bv_exchange_rates_flat = [748, 199, 200, 200]);
@@ -7,6 +29,5 @@ ALTER VIEW iv_order_dim
 ALTER VIEW iv_order_dim
  CACHE FULL NO_STATUS
     BATCHSIZEINCACHE DEFAULT TIMETOLIVEINCACHE NOEXPIRE
-    ONSCHEMACHANGE RECREATE INCREMENTAL_LOAD
- DELEGATESTATSQUERY = true GET_TABLE_STATS = true ATSOURCE_THROUGH_VDP_ONLY;
+    ONSCHEMACHANGE RECREATE INCREMENTAL_LOAD;
 
